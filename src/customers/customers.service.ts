@@ -1,5 +1,6 @@
 import { Injectable,BadRequestException,NotFoundException,HttpException,HttpStatus} from '@nestjs/common';
 import { Custmon } from './interfaces/custmon/custmon.interface';
+import { ProductPatchDto } from './dto/customers-patch.dto/customers-patch.dto';
 @Injectable()
 export class CustomersService {
    private cutmon: Custmon[] = [
@@ -7,13 +8,15 @@ export class CustomersService {
               id: 1,
               name: 'Vela aromatica',
               age: 26,
-              birthday: new Date('1997-02-06')
+              birthday: new Date('1997-02-06'),
+              recidence : "quito"
             },
             {
               id: 2,
               name: 'Marco de fotos pequeño',
               age: 26,
-              birthday: new Date('1997-02-06')
+              birthday: new Date('1997-02-06'),
+              recidence : "quito"
             }
           ];
            getCuts(): Custmon[] {
@@ -41,10 +44,25 @@ export class CustomersService {
                         id: this.lastId() + 1,
                         name: body.name,
                         age: body.age,
-                        birthday: body.birthady
+                        birthday: body.birthady,
+                        recidence: body.recidence
                       }
                     ];
                   }
+
+
+
+                  patch(id: number, body: ProductPatchDto) {
+                    let previousCustomr = this.getCustid(id);
+                    let custmon: Custmon = {
+                      ...previousCustomr,
+                      ...body
+                    }
+                    this.cutmon = this.cutmon.map((item: Custmon) => {
+                      return item.id == id ? custmon : item;
+                    });
+                  }
+
 update(id: number, body: any) {
   const product = this.cutmon.find( (item: Custmon) => item.id == id);
 
@@ -67,7 +85,8 @@ if (isNaN(age) || age <= 0) {
             id,
             name: body.name,
             age: body.age,
-            birthday: body.birthady
+            birthday: body.birthady,
+            recidence: body.recidence
           }
           this.cutmon = this.cutmon.map( (item: Custmon) => {
             console.log(item, id, item.id == id);

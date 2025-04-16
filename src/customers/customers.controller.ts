@@ -1,6 +1,7 @@
 import { Controller,Get,HttpStatus,Param,Res,Post,HttpCode,Body,Put,Delete,Patch,Query,ParseIntPipe,BadRequestException,ValidationPipe} from '@nestjs/common';
 import { Custmon } from './interfaces/custmon/custmon.interface';
 import { CustomersService } from './customers.service';
+import { ProductPatchDto } from './dto/customers-patch.dto/customers-patch.dto';
 @Controller('customers')
 export class CustomersController {
 
@@ -42,7 +43,13 @@ constructor(private readonly customersService: CustomersService) { }
       this.customersService.delete(id);
     }
 
-
+    @Patch(':id')
+    async patch(
+      @Param('id', ParseIntPipe) id: number,
+      @Body() body: ProductPatchDto,
+    ) {
+      return this.customersService.patch(id, body);
+    }
 //control
      @Get('ini/hello')
         getHelloInProducts(): string {
@@ -63,6 +70,7 @@ constructor(private readonly customersService: CustomersService) { }
       }
       
       @Post('creat')
+      
       createProductt(
         @Body('name') name: string, 
         @Body('age') age: string,
