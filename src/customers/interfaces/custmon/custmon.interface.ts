@@ -1,4 +1,5 @@
-import { IsString, IsNotEmpty, Matches,IsDateString,ValidateIf,IsInt} from 'class-validator';
+import { IsString, IsNotEmpty, Matches,ValidateIf,IsInt, IsDate} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class Custmon {
   id: number;
@@ -9,11 +10,13 @@ export class Custmon {
     message: 'El nombre no debe contener números.',
   })
   name: string;
-  @IsInt(
-    {
-        message: 'La edad no debe contener letras.',}
-  )
+
+ @Type(()=> Number)
+    @IsString({ message : 'La edad debe ser un numero entero'})
   age: number;
 
+
+  @Type(()=>Date)
+  @IsDate({message:'lafecha de nacimiento de tener frmato AAAA-MM-DD '})
   birthday: Date;
 }

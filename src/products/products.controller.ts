@@ -1,6 +1,8 @@
 import { Controller,Get,Param,Post,Body,HttpCode, HttpStatus,Res,Put,Patch,Delete,Query,ParseIntPipe,BadRequestException,ValidationPipe} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Product } from './interfaces/product/product.interface';
+import { ProductDto } from './dto/product.dto/product.dto';
+
 @Controller('products')
 export class ProductsController {
 
@@ -43,8 +45,6 @@ export class ProductsController {
       this.productsService.delete(id);
     }
   
-
-
     //controlll
 
     @Get('ini/hello')
@@ -65,15 +65,27 @@ export class ProductsController {
     return `Página de detalle de producto ${id}, en tamaño ${size}`;
   }
   
-  @Post('creat')
-  createProductt(
-    @Body('name') name: string, 
-    @Body('description') description: string
-  ) {
-    return `Creo el producto ${name} con descripción ${description}.`;
-  }
+  // @Post('creat')
+  // createProductt(
+  //   @Body('name') name: string, 
+  //   @Body('description') description: string
+  // ) {
+  //   return `Creo el producto ${name} con descripción ${description}.`;
+  // }
   
+  // @Post('creat')
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // createProducct(
+  //   @Body() productDto: ProductDto,
+  // ) {
+  //   this.productsService.insert(productDto);
+  // }
  
+  @Post('creat')
+createProduc( @Body() productDto: ProductDto ) {
+  this.productsService.insert(productDto);
+}
+
   @Get('error/ruta-error-404')
   @HttpCode(HttpStatus.NOT_FOUND)
   rutaConError404() {
@@ -81,7 +93,7 @@ export class ProductsController {
   }
   
   @Put('act/:id')
-  update(@Param('id') id: number, @Body() body) {
+  update(@Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number, @Body() body) {
     return `Estás haciendo una operación de actualización del recurso ${id} 
             con ${body.name} y ${body.description}`;
   }
@@ -99,7 +111,7 @@ export class ProductsController {
   
 
       @Get('con/:id')
-      findi(@Res() response, @Param('id') id: number) {
+      findi(@Res() response, @Param('id',ParseIntPipe) id: number) {
         if(id < 100) {
           return response.status(HttpStatus.OK).send(`Página del producto ${id}`);
         } else {

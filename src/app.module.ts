@@ -5,9 +5,11 @@ import { ProductsController } from './products/products.controller';
 import { CustomersController } from './customers/customers.controller';
 import { ProductsService } from './products/products.service';
 import { CustomersService } from './customers/customers.service';
+import { ProductsModule } from './products/products.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
-  imports: [],
+  imports: [ProductsModule, TagsModule],
   controllers: [AppController, ProductsController, CustomersController],
   providers: [AppService, ProductsService, CustomersService],
 })
