@@ -1,4 +1,4 @@
-import { Controller, Post,UsePipes,ValidationPipe,Body, Get, Param,Put,Delete,NotFoundException} from '@nestjs/common';
+import { Controller, Post,UsePipes,ValidationPipe,Body, Get, Param,Put,Delete,NotFoundException, Patch} from '@nestjs/common';
 import { TagDto } from './dto/tag.dto/tag.dto';
 import { TagsService } from './tags.service';
 import { Tag } from './tag/tag.interface';
@@ -29,12 +29,22 @@ async update(@Param('id') id: string, @Body() body: TagDto): Promise<Tag> {
   return this.tagsService.update(id, body);
 }
 
+@Patch(':id')
+async updatee(@Param('id') id: string, @Body() body: TagDto): Promise<Tag> {
+  return this.tagsService.update(id, body);
+}
+
 @Delete(':id')
 async remove(@Param('id') id: string): Promise<{ message: string }> {
   await this.tagsService.remove(id);
   return { message: `Tag con id ${id} eliminado correctamente` };
 }
 
+@Delete('/slug:slug')
+async removeee(@Param('slug') slug: string): Promise<{ message: string }> {
+  await this.tagsService.removeee(slug);
+  return { message: `Tag con slug ${slug} eliminado correctamente` };
+}
 
 }
 
@@ -46,7 +56,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ValidationError } from 'class-validator';
+
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {

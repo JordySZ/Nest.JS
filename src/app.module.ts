@@ -9,9 +9,23 @@ import { ProductsModule } from './products/products.module';
 import { TagsModule } from './tags/tags.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './tags/tags.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from './user/user.module';
+import { User } from './user/users.entity';
 
 @Module({
-  imports: [ProductsModule, TagsModule],
+  imports: [ProductsModule, TagsModule, TypeOrmModule.forRoot({
+    type: 'postgres',
+    host: 'localhost',
+    port: 5432,
+    username: 'postgres',
+    password: '12345',
+    database: 'backed',
+    entities:[User],
+    synchronize: true,
+    logging: true
+
+  }), UserModule],
   controllers: [AppController, ProductsController, CustomersController],
   providers: [AppService, ProductsService, CustomersService, {
     provide: APP_FILTER,

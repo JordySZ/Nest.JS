@@ -23,9 +23,7 @@ return tag
 
     async insert(tagDto : TagDto): Promise<Tag>{
         const existingTag = this.tags.find(tag => tag.slug === tagDto.slug);
-        if (existingTag) {
-          throw new NotFoundException(`Ya existe un tag con el slug '${tagDto.slug}'`);
-        }
+        
          if (this.tags.find(p => p.name === tagDto.name)) {
                     throw new BadRequestException(`El producto con nombre "${tagDto.name}" ya existe.`);
                   }
@@ -43,6 +41,33 @@ return tag
 
  
 
+
+      async updatee(id: string, tagDto: TagDto): Promise<Tag> {
+        const index = this.tags.findIndex(tag => tag.id === id);
+      
+        if (index === -1) {
+          throw new NotFoundException(`Tag con id ${id} no encontrado`);
+        }
+      
+        const updatedTag: Tag = {
+          ...this.tags[index],
+          ...tagDto,
+          id, // Aseguramos que el ID no cambie
+        };
+      
+        this.tags[index] = updatedTag;
+        return updatedTag;
+      }
+
+      async removee(id: string): Promise<void> {
+        const index = this.tags.findIndex(tag => tag.id === id);
+      
+        if (index === -1) {
+          throw new NotFoundException(`Tag con id ${id} no encontrado`);
+        }
+      
+        this.tags.splice(index, 1); // Elimina el tag del array
+      }
 
       async update(id: string, tagDto: TagDto): Promise<Tag> {
         const index = this.tags.findIndex(tag => tag.id === id);
@@ -70,6 +95,20 @@ return tag
       
         this.tags.splice(index, 1); // Elimina el tag del array
       }
+
+
+
+      async removeee(slug: string): Promise<void> {
+        const index = this.tags.findIndex(tag => tag.slug === slug);
+      
+        if (index === -1) {
+          throw new NotFoundException(`Tag con sgul ${slug} no encontrado`);
+        }
+      
+        this.tags.splice(index, 1); // Elimina el tag del array
+      }
+
+
 
       getBySlug(slug: string): Tag {
         const tag = this.tags.find(tag => tag.slug === slug);
