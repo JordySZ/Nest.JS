@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,BadRequestException} from '@nestjs/common';
 import { InjectRepository} from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
 import { NotFoundError } from 'rxjs';
-
+import { CreateUserDto } from './userdto';
+import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class UserService {
     constructor(
@@ -23,13 +24,17 @@ export class UserService {
        return user;
     }
 
-    async create(user: User): Promise<User> {
-        // Validación: asegúrate de que el nombre y el correo no sean nulos
-        if (!user.name || !user.email) {
-          throw new Error('Name and email are required!');
+
+    async create(userDto: CreateUserDto): Promise<User> {
+        try {
+          // Verifica que userDto tenga todos los valores esperados
+          console.log(userDto);
+          
+          const user = plainToInstance(User, userDto);
+          return await this.userRepository.save(user);
+        } catch (error) {
+          console.error('Error completo:', error);
+          throw new Error('Error creando el usuario: ' + error.message);
         }
-    
-        // Guardamos el usuario en la base de datos
-        return this.userRepository.save(user);
       }
 }

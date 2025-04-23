@@ -2,6 +2,7 @@ import { Body, Controller,Get, Param, ParseIntPipe,Post,ValidationPipe } from '@
 import { User } from './users.entity';
 import { UserService } from './user.service';
 import { create } from 'domain';
+import { CreateUserDto } from './userdto';
 @Controller('user')
 export class UserController {
     constructor(private readonly userService : UserService){}
@@ -18,7 +19,8 @@ export class UserController {
     
 }
 @Post()
-create(@Body(new ValidationPipe()) user: User): Promise<User> {
+create(@Body(new ValidationPipe()) user: CreateUserDto): Promise<User> {
+  console.log(user);  // Verifica que los datos sean correctos
   return this.userService.create(user);
 }
 }

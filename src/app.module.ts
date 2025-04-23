@@ -19,11 +19,13 @@ import { User } from './user/users.entity';
     host: 'localhost',
     port: 5432,
     username: 'postgres',
-    password: '12345',
+    password: '123',
     database: 'backed',
     entities:[User],
     synchronize: true,
-    logging: true
+    logging: true,
+    autoLoadEntities: true,
+
 
   }), UserModule],
   controllers: [AppController, ProductsController, CustomersController],
