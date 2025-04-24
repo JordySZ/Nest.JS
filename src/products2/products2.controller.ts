@@ -47,5 +47,22 @@ patch(
 remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
   return this.proService.remove(id);
 }
+
+@Get('count-by-size/:sizeLabel')
+  async countBySize(@Param('sizeLabel') sizeLabel: string): Promise<{ message: string, count: number }> {
+    const count = await this.proService.countProductsBySize(sizeLabel);
+    
+    if (count === 0) {
+      return {
+        message: `No hay productos disponibles para la talla ${sizeLabel}`,
+        count: 0,
+      };
+    }
+
+    return {
+      message: `Hay ${count} productos disponibles para la talla ${sizeLabel}`,
+      count: count,
+    };
+  }
     }
 

@@ -1,6 +1,19 @@
-import { IsString } from 'class-validator';
+import { IsString,IsNotEmpty,ArrayNotEmpty,IsArray} from 'class-validator';
 
 export class SizeDto {
   @IsString()
-  size: string; // Talla, por ejemplo, "S", "M", "L", etc.
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @IsString()
+  @IsNotEmpty()
+  genero: string;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  sizes: string[];  // Cambiado a string[] para aceptar etiquetas como "M", "L"
 }

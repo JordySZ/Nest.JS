@@ -78,20 +78,5 @@ export class UserService {
     }
 
     // Obtener todos los productos de un usuario específico
-    async findUserProducts(id: number): Promise<Produ[]> {
-      const user = await this.userRepository.findOne({
-        where: { id },
-        relations: ['products'], // Cargamos la relación 'products' del usuario
-      });
-      
-      if (!user) {
-        throw new NotFoundException(`Usuario con ID: ${id} no encontrado`);
-      }
-      
-      // Devuelvo solo los productos, sin la propiedad 'user'
-      return user.productos.map((product) => {
-        const { user, ...productWithoutUser } = product; // Desestructuramos para quitar el 'user'
-        return productWithoutUser;
-      });
-    }
+    
 }

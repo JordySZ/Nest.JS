@@ -1,23 +1,28 @@
 import { Entity } from "typeorm";
-import { IsNotEmpty, IsInt, IsArray, IsString } from "class-validator";
+import { IsNotEmpty, IsInt, IsArray, IsString,ArrayNotEmpty,Min } from "class-validator";
 import { Type } from "class-transformer";
 
 @Entity()
 export class CreadDTO {
+  @IsString()
   @IsNotEmpty()
   name: string;
 
+  @IsString()
   @IsNotEmpty()
   description: string;
 
+  @IsString()
+  @IsNotEmpty()
+  genero: string;
+
   @IsInt()
+  @Min(0)  // Valida que stock sea un número entero positivo o 0
   stock: number;
 
-  @IsInt()
-  userId: number;
-
   @IsArray()
-  @IsInt({ each: true })
-  @Type(() => Number) // <- Esto convierte strings a números automáticamente
-  sizes: number[];
+  @ArrayNotEmpty()
+  sizes: string[];  // Cambiado a string[] para aceptar etiquetas como "M", "L", etc.
+
+ 
 }

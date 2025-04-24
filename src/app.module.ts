@@ -30,7 +30,7 @@ import { SizeEntity } from './size/size.entity';
     host: 'localhost',
     port: 5432,
     username: 'postgres',
-    password: '12345',
+    password: '123',
     database: 'backed',
     entities:[User,Produ,SizeEntity],
     synchronize: true,

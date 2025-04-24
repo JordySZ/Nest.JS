@@ -1,17 +1,20 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { SizeEntity } from './size.entity'; // Ajustá el path si es distinto
+import { Controller, Get, Delete, Param } from '@nestjs/common';
+import { SizeService } from './size.service';
+import { SizeEntity } from './size.entity';
 
 @Controller('size')
 export class SizeController {
-  constructor(
-    @InjectRepository(SizeEntity)
-    private sizeRepository: Repository<SizeEntity>,
-  ) {}
+  constructor(private readonly sizeService: SizeService) {}
 
-  @Post()
-  createSize(@Body() body: { size: string }) {
-    return this.sizeRepository.save({ size: body.size });
+  // Obtener todas las tallas
+  @Get()
+  async getAllSizes(): Promise<SizeEntity[]> {
+    return this.sizeService.findAll();
+  }
+
+  // Eliminar una talla por ID
+  @Delete(':id')
+  async remove(@Param('id') id: number): Promise<void> {
+    return this.sizeService.remove(id); // Llama al servicio para eliminar la talla
   }
 }

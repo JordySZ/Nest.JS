@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SizeEntity } from './size.entity';
@@ -10,12 +10,19 @@ export class SizeService {
     private sizeRepository: Repository<SizeEntity>,
   ) {}
 
-  async create(size: string): Promise<SizeEntity> {
-    const newSize = this.sizeRepository.create({ size });
-    return await this.sizeRepository.save(newSize);
+  // Obtener todas las tallas
+  async findAll(): Promise<SizeEntity[]> {
+    return await this.sizeRepository.find(); 
   }
 
-  async findAll(): Promise<SizeEntity[]> {
-    return await this.sizeRepository.find();
+  // Eliminar una talla por ID
+  async remove(id: number): Promise<void> {
+    const talla = await this.sizeRepository.findOne({ where: { id } });
+
+    if (!talla) {
+      throw new NotFoundException(`Talla con ID: ${id} no encontrada`);
+    }
+
+    await this.sizeRepository.remove(talla); // Eliminar la talla de la base de datos
   }
 }

@@ -7,9 +7,18 @@ export class SizeEntity {
   id: number;
 
   @Column()
-  size: string;
+
+  genero: string;
+
+  @Column()
+  size_ecuador: string;
+
+  @Column()
+  size_usa: string;
+
+  @Column()
+  size_ue: string;
 
   @ManyToMany(() => Produ, (product) => product.sizes)
-  @JoinTable() // Solo si esta es la entidad dueña de la relación
   products: Produ[];
 }
