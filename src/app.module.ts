@@ -12,6 +12,13 @@ import { AllExceptionsFilter } from './tags/tags.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { User } from './user/users.entity';
+import { Products2Controller } from './products2/products2.controller';
+import { Products2Service } from './products2/products2.service';
+import { Products2Module } from './products2/products2.module';
+import { Produ } from './products2/produc.entity';
+
+
+
 
 @Module({
   imports: [ProductsModule, TagsModule, TypeOrmModule.forRoot({
@@ -21,17 +28,17 @@ import { User } from './user/users.entity';
     username: 'postgres',
     password: '123',
     database: 'backed',
-    entities:[User],
+    entities:[User,Produ],
     synchronize: true,
     logging: true,
     autoLoadEntities: true,
 
 
-  }), UserModule],
+  }), UserModule, Products2Module],
   controllers: [AppController, ProductsController, CustomersController],
   providers: [AppService, ProductsService, CustomersService, {
     provide: APP_FILTER,
     useClass: AllExceptionsFilter,
-  },],
+  }],
 })
 export class AppModule {}
