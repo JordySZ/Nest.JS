@@ -16,6 +16,10 @@ import { Products2Controller } from './products2/products2.controller';
 import { Products2Service } from './products2/products2.service';
 import { Products2Module } from './products2/products2.module';
 import { Produ } from './products2/produc.entity';
+import { SizeController } from './size/size.controller';
+import { SizeService } from './size/size.service';
+import { SizeModule } from './size/size.module';
+import { SizeEntity } from './size/size.entity';
 
 
 
@@ -26,15 +30,15 @@ import { Produ } from './products2/produc.entity';
     host: 'localhost',
     port: 5432,
     username: 'postgres',
-    password: '123',
+    password: '12345',
     database: 'backed',
-    entities:[User,Produ],
+    entities:[User,Produ,SizeEntity],
     synchronize: true,
     logging: true,
     autoLoadEntities: true,
 
 
-  }), UserModule, Products2Module],
+  }), UserModule, Products2Module, SizeModule],
   controllers: [AppController, ProductsController, CustomersController],
   providers: [AppService, ProductsService, CustomersService, {
     provide: APP_FILTER,

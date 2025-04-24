@@ -51,7 +51,7 @@ export class UserController {
     }
 
     // Obtener los productos de un usuario específico
-    @Get('products/:id')
+    @Get(':id/lol')
     async findUserProducts(@Param('id', ParseIntPipe) id: number): Promise<Produ[]> {
       const products = await this.userService.findUserProducts(id);
       return products;  // Devuelve solo los productos
