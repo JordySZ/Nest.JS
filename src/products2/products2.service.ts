@@ -67,6 +67,14 @@ export class Products2Service {
           L:  { usa: "40", ecuador: "L",  ue: "50" },
           XL: { usa: "42", ecuador: "XL", ue: "52" },
           XXL:{ usa: "44", ecuador: "XXL",ue: "54" },
+        },
+        niño: {
+          XS: { usa: "4T", ecuador: "4", ue: "104" },
+          S:  { usa: "6",  ecuador: "6", ue: "110" },
+          M:  { usa: "8",  ecuador: "8", ue: "116" },
+          L:  { usa: "10", ecuador: "10", ue: "122" },
+          XL: { usa: "12", ecuador: "12", ue: "128" },
+          XXL:{ usa: "14", ecuador: "14", ue: "134" }
         }
       };
   
