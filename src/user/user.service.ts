@@ -79,7 +79,7 @@ export class UserService {
     async getPaginatedProducts(): Promise<User[]> {
         try {
           return await this.userRepository.find({
-            take: 50,  // Limita a 5 productos
+            take: 2,  // Limita a 5 productos
           
           });
         } catch (error) {
