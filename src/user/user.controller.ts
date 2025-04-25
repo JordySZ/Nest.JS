@@ -12,7 +12,10 @@ export class UserController {
     findAll(): Promise<User[]> {
         return this.userService.findAll();
     }
-
+    @Get('paginated')
+    async getPaginatedProducts(): Promise<User[]> {
+      return this.userService.getPaginatedProducts();
+    }
     // Obtener un usuario por ID
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {

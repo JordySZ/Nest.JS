@@ -14,7 +14,11 @@ export class Products2Controller {
         findAll():Promise<Produ[]>{
             return this.proService.findAll();
         }
-    
+        @Get('stocks')
+        getStocks() {
+          return this.proService.getProductNamesAndStock();
+        }
+        
         @Get(':id')
         findOne(@Param('id',ParseIntPipe)id:number): Promise<Produ>
     {
@@ -64,5 +68,6 @@ remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
       count: count,
     };
   }
+  
     }
 

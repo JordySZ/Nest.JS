@@ -76,7 +76,17 @@ export class UserService {
 
         await this.userRepository.remove(user);
     }
-
+    async getPaginatedProducts(): Promise<User[]> {
+        try {
+          return await this.userRepository.find({
+            take: 50,  // Limita a 5 productos
+          
+          });
+        } catch (error) {
+          console.error('Error al obtener productos:', error);
+          throw new Error('No se pudieron obtener los productos');
+        }
+      }
     // Obtener todos los productos de un usuario específico
     
 }

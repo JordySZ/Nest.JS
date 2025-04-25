@@ -51,6 +51,11 @@ export class Products2Service {
     return producto;
   }
 
+  async getProductNamesAndStock(): Promise<{ name: string; stock: number }[]> {
+    return await this.proRepository.find({
+      select: ['name', 'stock']
+    });
+  }
   // Crear un nuevo producto
   async create(proDTO: CreadDTO): Promise<Produ> {
     try {
@@ -233,4 +238,7 @@ export class Products2Service {
 
     await this.proRepository.remove(producto);
   }
+
+
 }
+
