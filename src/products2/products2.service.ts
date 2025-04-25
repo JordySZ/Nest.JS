@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Produ } from './produc.entity';
 import { CreadDTO } from './DTO';
+import { User } from 'src/user/users.entity';
 import { SizeEntity } from 'src/size/size.entity';
 
 @Injectable()
@@ -11,25 +12,28 @@ export class Products2Service {
     @InjectRepository(Produ)
     private proRepository: Repository<Produ>,
 
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+
     @InjectRepository(SizeEntity)
     private sizeRepository: Repository<SizeEntity>,
   ) {}
 
-  // Método para contar productos por talla
+  // Contar productos por talla
   async countProductsBySize(sizeLabel: string): Promise<number> {
     const count = await this.proRepository
       .createQueryBuilder('produ')
       .leftJoinAndSelect('produ.sizes', 'size')
       .where('size.size_label = :sizeLabel', { sizeLabel })
       .getCount();
-      
+
     return count;
   }
 
   // Obtener todos los productos
   async findAll(): Promise<Produ[]> {
     return this.proRepository.find({
-      relations: ['sizes'], // Mostrar solo las tallas asociadas
+      relations: ['user', 'sizes'], // Mostrar usuario y tallas asociadas
     });
   }
 
@@ -37,7 +41,7 @@ export class Products2Service {
   async findOne(id: number): Promise<Produ> {
     const producto = await this.proRepository.findOne({
       where: { id },
-      relations: ['sizes'], // Mostrar solo las tallas
+      relations: ['user', 'sizes'], // Mostrar usuario y tallas
     });
 
     if (!producto) {
@@ -50,6 +54,13 @@ export class Products2Service {
   // Crear un nuevo producto
   async create(proDTO: CreadDTO): Promise<Produ> {
     try {
+      const user = await this.userRepository.findOneBy({ id: proDTO.userId });
+      if (!user) {
+        throw new NotFoundException(`Usuario con ID: ${proDTO.userId} no encontrado`);
+      }
+
+      let sizes: SizeEntity[] = [];
+
       // Definir las conversiones para tallas según género
       const conversiones: Record<string, { [key: string]: { usa: string; ecuador: string; ue: string } }> = {
         hombre: {
@@ -77,9 +88,7 @@ export class Products2Service {
           XXL:{ usa: "14", ecuador: "14", ue: "134" }
         }
       };
-  
-      let sizes: SizeEntity[] = [];
-  
+
       // Validar si se enviaron tallas
       if (proDTO.sizes && proDTO.sizes.length > 0) {
         // Procesar las tallas indicadas
@@ -90,25 +99,25 @@ export class Products2Service {
               genero: proDTO.genero,
             },
           });
-  
+
           // Si la talla no existe, la creamos automáticamente
           if (!talla) {
             const valores = conversiones[proDTO.genero]?.[label];
-  
+
             if (!valores) {
               throw new NotFoundException(`No se puede crear talla desconocida: ${label}`);
             }
-  
+
             talla = this.sizeRepository.create({
               genero: proDTO.genero,
               size_ecuador: valores.ecuador,
               size_usa: valores.usa,
               size_ue: valores.ue,
             });
-  
+
             await this.sizeRepository.save(talla);
           }
-  
+
           sizes.push(talla);
         }
       } else if (proDTO.genero) {
@@ -119,54 +128,56 @@ export class Products2Service {
       } else {
         throw new NotFoundException('No se ha proporcionado el género o las tallas');
       }
-  
+
       // Validar si encontramos tallas para el producto
       if (sizes.length === 0) {
         throw new NotFoundException(`No se encontraron tallas para el género: ${proDTO.genero}`);
       }
-  
+
       // Crear el producto
       const producto = this.proRepository.create({
         name: proDTO.name,
         description: proDTO.description,
         genero: proDTO.genero,
         stock: proDTO.stock,
+        user: user,
         sizes: sizes,
       });
-  
+
       const saved = await this.proRepository.save(producto);
-  
+
       // Buscar el producto recién creado con sus tallas
       const result = await this.proRepository.findOne({
         where: { id: saved.id },
         relations: ['sizes'],
       });
-  
+
       if (!result) {
         throw new NotFoundException(`Producto recién creado no encontrado`);
       }
-  
+
       return result;
     } catch (error) {
       console.error('Error creando el producto:', error);
       throw new Error('Error creando el producto: ' + error.message);
     }
   }
+
   // Actualizar un producto
   async update(id: number, updateDto: CreadDTO): Promise<Produ> {
     const producto = await this.proRepository.findOne({
       where: { id },
       relations: ['sizes'],
     });
-  
+
     if (!producto) {
       throw new NotFoundException(`Producto con ID: ${id} no encontrado`);
     }
-  
+
     // Convertir etiquetas a entidades de talla
     if (updateDto.sizes) {
       const sizes: SizeEntity[] = [];
-  
+
       for (const label of updateDto.sizes) {
         const talla = await this.sizeRepository.findOne({
           where: {
@@ -174,17 +185,17 @@ export class Products2Service {
             genero: updateDto.genero,
           },
         });
-  
+
         if (!talla) {
           throw new NotFoundException(`Talla con etiqueta "${label}" y género "${updateDto.genero}" no encontrada`);
         }
-  
+
         sizes.push(talla);
       }
-  
+
       producto.sizes = sizes;
     }
-  
+
     const updated = Object.assign(producto, updateDto);
     return await this.proRepository.save(updated);
   }
@@ -195,20 +206,20 @@ export class Products2Service {
       where: { id },
       relations: ['sizes'],
     });
-  
+
     if (!producto) {
       throw new NotFoundException(`Producto con ID: ${id} no encontrado`);
     }
-  
+
     if (partialDto.sizes !== undefined) {
       if (partialDto.sizes.length === 0) {
         throw new NotFoundException(`No se puede dejar el producto sin tallas`);
       }
-  
+
       const sizes = await this.sizeRepository.findByIds(partialDto.sizes);
       producto.sizes = sizes;
     }
-  
+
     const updated = Object.assign(producto, partialDto);
     return await this.proRepository.save(updated);
   }

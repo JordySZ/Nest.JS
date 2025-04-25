@@ -17,6 +17,9 @@ export class CreadDTO {
   genero: string;
 
   @IsInt()
+  userId: number;
+  
+  @IsInt()
   @Min(0)  // Valida que stock sea un número entero positivo o 0
   stock: number;
 

@@ -18,6 +18,10 @@ export class Produ {
   @Column()
   stock: number;
 
+  @ManyToOne(() => User, (user) => user.productos, { nullable: true })
+  user?: User;
+
+
   @ManyToMany(() => SizeEntity, (size) => size.products)
   @JoinTable() // Necesario para establecer la relación de muchos a muchos
   sizes: SizeEntity[];  // La relación con las tallas

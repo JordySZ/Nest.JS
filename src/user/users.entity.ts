@@ -20,4 +20,8 @@ export class User {
   @Column()
   identification: number;
 
+  @OneToMany(() => Produ, (producto) => producto.user) // Relación con Produ
+  productos: Produ[]; // Esto es lo que deberías tener para la relación
+
+
 }
